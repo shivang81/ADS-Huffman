@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -152,9 +153,12 @@ public class Encoder {
             while ((line = bufferedReader.readLine()) != null) {
                 encodedString.append(codeTable.get(line));
             }
+            Path path = Paths.get("/Users/shivanggupta/Desktop/output.bin");
+            Files.write(path, encodedString.toString().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return encodedString.toString();
     }
 

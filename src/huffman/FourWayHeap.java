@@ -11,7 +11,7 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
     private final static double COLLAPSE_RATIO = 0.25; //how empty must the heap be, to be the underlying collaped
     private MinHeapNode[] array;
     private int d = 4; //parameter d
-    private int size; //getSize of the heap
+    private int size; //size of the heap
     private int initialSize;
 
     /**
@@ -53,10 +53,10 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
         if (size == 0) {
             throw new IllegalStateException("Heap is empty");
         }
-        MinHeapNode tmp = (MinHeapNode) array[3];
+        MinHeapNode tmp = array[3];
         array[3] = array[size + 2];
         size--;
-//        if (getSize < array.length * COLLAPSE_RATIO && array.length / EXPAND_RATIO > initialSize) {
+//        if (size < array.length * COLLAPSE_RATIO && array.length / EXPAND_RATIO > initialSize) {
 //            collapse();
 //        }
         repairTop(3);
@@ -78,11 +78,11 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
      */
     private void repairTop(int topIndex) {
         MinHeapNode tmp = array[topIndex];
-        int succ = findSuccessor(topIndex * d + 1, topIndex * d + d) + 3;
+        int succ = findSuccessor((topIndex-3) * d + 4, (topIndex-3) * d + d + 3);
         while (succ < size + 3 && tmp.compareTo(array[succ]) > 0) {
             array[topIndex] = array[succ];
             topIndex = succ;
-            succ = findSuccessor(succ * d + 1, succ * d + d) + 3;
+            succ = findSuccessor(succ * d + 1, succ * d + d);
         }
         array[topIndex] = tmp;
     }
