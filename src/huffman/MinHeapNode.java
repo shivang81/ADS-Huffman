@@ -8,12 +8,18 @@ public class MinHeapNode implements Comparable<MinHeapNode>{
     Integer frequency;
     MinHeapNode left;
     MinHeapNode right;
+    MinHeapNode child;
+    MinHeapNode nextSibling;
+    MinHeapNode prev;
 
     public MinHeapNode(String data, Integer frequency) {
         this.data = data;
         this.frequency = frequency;
         this.left = null;
         this.right = null;
+        this.child = null;
+        this.nextSibling = null;
+        this.prev = null;
     }
 
     public MinHeapNode() {
@@ -25,7 +31,29 @@ public class MinHeapNode implements Comparable<MinHeapNode>{
 
     @Override
     public int compareTo(MinHeapNode node) {
-        return this.frequency - node.frequency;
+        int ret = this.frequency - node.frequency;
+        if(ret != 0)
+            return ret;
+        if(this.data.equals("$Internal$"))
+            return 1;
+        else
+            return -1;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public Integer getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(Integer frequency) {
+        this.frequency = frequency;
     }
 
     @Override

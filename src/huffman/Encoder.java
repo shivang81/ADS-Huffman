@@ -15,9 +15,8 @@ import java.util.stream.Stream;
  */
 public class Encoder {
     private HashMap<String, Integer> freqTable = new HashMap<>();
-    private Map<String, Integer> sortedFreqTable;
     private MinHeapNode top = null;
-    private String INPUT_FILE = "/Users/shivanggupta/Desktop/sample_input_small.txt";
+    private String INPUT_FILE = "/Users/shivanggupta/Desktop/sample_input_large.txt";
     private HashMap<String, String> codeTable = new HashMap<>();
     private void buildFreqTable() {
 
@@ -33,8 +32,19 @@ public class Encoder {
             Long startTime = System.currentTimeMillis();
             for(int i = 0; i < 10; i++)
                 buildHuffmanTree();
-            System.out.println("Time in milliseconds = " + String.valueOf((System.currentTimeMillis() - startTime) / 10));
-            printCodes(top, new int[10000], 0);
+            System.out.println("Time using binary heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
+
+            startTime = System.currentTimeMillis();
+            for(int i = 0; i < 10; i++)
+                buildHuffmanTreeUsingFourWayHeap();
+            System.out.println("Time using 4-way heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
+
+            startTime = System.currentTimeMillis();
+            for(int i = 0; i < 10; i++)
+                buildHuffmanTreeUsingPairingHeap();
+            System.out.println("Time using pairing heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
+
+//            printCodes(top, new int[10000], 0);
 //            System.out.println();
 //            String encodedString = encode();
 //            System.out.println(encodedString);
@@ -70,6 +80,49 @@ public class Encoder {
         return binaryHeap.removeMin();
     }
 
+    MinHeapNode buildHuffmanTreeUsingFourWayHeap() {
+        MinHeapNode left, right;
+        FourWayHeap<MinHeapNode> fourWayHeap = new FourWayHeap<>(freqTable.size());
+
+        for(Map.Entry<String, Integer> entry : freqTable.entrySet()) {
+            fourWayHeap.insert(new MinHeapNode(entry.getKey(), entry.getValue()));
+        }
+
+        while (fourWayHeap.getSize() != 1) {
+            left = fourWayHeap.removeMin();
+            right = fourWayHeap.removeMin();
+
+            top = new MinHeapNode("$Internal$", left.frequency + right.frequency);
+            top.left = left;
+            top.right = right;
+            fourWayHeap.insert(top);
+        }
+
+        return fourWayHeap.removeMin();
+    }
+
+    MinHeapNode buildHuffmanTreeUsingPairingHeap() {
+        MinHeapNode left, right;
+        PairingHeap pairingHeap = new PairingHeap();
+
+        for(Map.Entry<String, Integer> entry : freqTable.entrySet()) {
+            pairingHeap.insert(new MinHeapNode(entry.getKey(), entry.getValue()));
+        }
+
+        while (pairingHeap.getSize() != 1) {
+            left = pairingHeap.deleteMin();
+            right = pairingHeap.deleteMin();
+
+            top = new MinHeapNode("$Internal$", left.frequency + right.frequency);
+            top.left = left;
+            top.right = right;
+            pairingHeap.insert(top);
+        }
+
+        return pairingHeap.deleteMin();
+    }
+
+
     void printCodes(MinHeapNode root, int arr[], int top) {
         if (root.left != null) {
             arr[top] = 0;
@@ -82,10 +135,10 @@ public class Encoder {
         }
 
         if (root.left == null && root.right == null) {
-//            System.out.print(root.data + " ");
+            System.out.print(root.data + " ");
             String code  = printArr(arr, top);
             codeTable.put(root.data, code);
-//            System.out.println();
+            System.out.println();
         }
     }
 
@@ -126,7 +179,7 @@ public class Encoder {
     String printArr(int[] arr, int n) {
         String code = "";
         for(int i = 0; i < n; i++) {
-//            System.out.print(arr[i]);
+            System.out.print(arr[i]);
             code += arr[i];
         }
         return code;
