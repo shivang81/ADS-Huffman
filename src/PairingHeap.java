@@ -1,5 +1,3 @@
-package huffman;
-
 public class PairingHeap
 {
     public PairingHeap() {

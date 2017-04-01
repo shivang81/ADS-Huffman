@@ -1,5 +1,3 @@
-package huffman;
-
 /**
  * Created by shivanggupta on 27/03/17.
  */

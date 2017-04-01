@@ -1,15 +1,11 @@
-package huffman;
-
-import java.util.Arrays;
-
 /**
  * Created by shivanggupta on 28/03/17.
  */
 public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
 
-    private final static int EXPAND_RATIO = 2; //how many times should be the underlying array expanded
+    private final static int EXPAND_RATIO = 2; //how many times should be the underlying heap expanded
     private final static double COLLAPSE_RATIO = 0.25; //how empty must the heap be, to be the underlying collaped
-    private MinHeapNode[] array;
+    private MinHeapNode[] heap;
     private int d = 4; //parameter d
     private int size; //size of the heap
     private int initialSize;
@@ -19,7 +15,7 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
      * @param initialSize initial capacity of the heap
      */
     public FourWayHeap(int initialSize) {
-        this.array = (MinHeapNode[]) new Comparable[initialSize + 3];
+        this.heap = (MinHeapNode[]) new Comparable[initialSize + 3];
         this.initialSize = initialSize;
         this.size = 0;
     }
@@ -30,18 +26,18 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
      * @param i element to be inserted
      */
     public void insert(MinHeapNode i) {
-//        if (array.length == size) {
+//        if (heap.length == size) {
 //            expand();
 //        }
         size++;
         int index = size + 2;
         int parentIndex = getParentIndex(index);
-        while (index > 3 && i.compareTo(array[parentIndex]) < 0) { //while the element is less then its parent
-            array[index] = array[parentIndex]; //place parent one level down
+        while (index > 3 && i.compareTo(heap[parentIndex]) < 0) { //while the element is less then its parent
+            heap[index] = heap[parentIndex]; //place parent one level down
             index = parentIndex; //and repeat the procedure on the next level
             parentIndex = getParentIndex(index);
         }
-        array[index] = i; //insert the element at the appropriate place
+        heap[index] = i; //insert the element at the appropriate place
     }
 
     /**
@@ -53,10 +49,10 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
         if (size == 0) {
             throw new IllegalStateException("Heap is empty");
         }
-        MinHeapNode tmp = array[3];
-        array[3] = array[size + 2];
+        MinHeapNode tmp = heap[3];
+        heap[3] = heap[size + 2];
         size--;
-//        if (size < array.length * COLLAPSE_RATIO && array.length / EXPAND_RATIO > initialSize) {
+//        if (size < heap.length * COLLAPSE_RATIO && heap.length / EXPAND_RATIO > initialSize) {
 //            collapse();
 //        }
         repairTop(3);
@@ -77,14 +73,14 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
      * @param topIndex index of the top of the heap
      */
     private void repairTop(int topIndex) {
-        MinHeapNode tmp = array[topIndex];
+        MinHeapNode tmp = heap[topIndex];
         int succ = findSuccessor((topIndex-3) * d + 4, (topIndex-3) * d + d + 3);
-        while (succ < size + 3 && tmp.compareTo(array[succ]) > 0) {
-            array[topIndex] = array[succ];
+        while (succ < size + 3 && tmp.compareTo(heap[succ]) > 0) {
+            heap[topIndex] = heap[succ];
             topIndex = succ;
-            succ = findSuccessor(succ * d + 1, succ * d + d);
+            succ = findSuccessor((succ-3) * d + 4, (succ-3) * d + d + 3);
         }
-        array[topIndex] = tmp;
+        heap[topIndex] = tmp;
     }
 
     /**
@@ -96,7 +92,7 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
     private int findSuccessor(int from, int to) {
         int succ = from;
         for (int i = from + 1; i <= to && i < size; i++) {
-            if ((array[succ]).compareTo(array[i]) > 0) {
+            if ((heap[succ]).compareTo(heap[i]) > 0) {
                 succ = i;
             }
         }
@@ -104,17 +100,17 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
     }
 
     /**
-     * Expand the underlying array
+     * Expand the underlying heap
      */
 //    private void expand() {
-//        array = Arrays.copyOf(array, array.length * EXPAND_RATIO);
+//        heap = Arrays.copyOf(heap, heap.length * EXPAND_RATIO);
 //    }
 //
 //    /**
-//     * Collapse the underlying array
+//     * Collapse the underlying heap
 //     */
 //    private void collapse() {
-//        array = Arrays.copyOf(array, array.length / EXPAND_RATIO);
+//        heap = Arrays.copyOf(heap, heap.length / EXPAND_RATIO);
 //    }
 
     public int getSize() {
@@ -125,7 +121,7 @@ public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            builder.append(array[i]).append(" ");
+            builder.append(heap[i]).append(" ");
         }
         return builder.toString();
     }
