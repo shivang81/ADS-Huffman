@@ -25,6 +25,7 @@ public class BinaryHeap<MinHeapNode extends Comparable<MinHeapNode>> {
             heapify(k);
         }
     }
+
     private void heapify(int k) {
         MinHeapNode tmp = heap[k];
         int child;

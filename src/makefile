@@ -6,7 +6,6 @@ JC = javac
 
 CLASSES = \
 	MinHeapNode.java \
-	BitWriter.java \
 	BinaryHeap.java \
 	FourWayHeap.java \
 	PairingHeap.java \

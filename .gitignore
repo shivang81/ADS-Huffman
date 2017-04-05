@@ -1,3 +1,11 @@
 
 .gitignore
-out/
+out
+.class
+src/BinaryHeap.class
+src/BitWriter.class
+src/FourWayHeap.class
+src/MinHeapNode.class
+src/PairingHeap.class
+src/decoder.class
+src/encoder.class

@@ -1,128 +1,113 @@
-/**
- * Created by shivanggupta on 28/03/17.
- */
-public class FourWayHeap<MinHeapNode extends Comparable<MinHeapNode>> {
+import java.util.NoSuchElementException;
 
-    private final static int EXPAND_RATIO = 2; //how many times should be the underlying heap expanded
-    private final static double COLLAPSE_RATIO = 0.25; //how empty must the heap be, to be the underlying collaped
-    private MinHeapNode[] heap;
-    private int d = 4; //parameter d
-    private int size; //size of the heap
-    private int initialSize;
+public class FourWayHeap {
 
-    /**
-     * Constructor
-     * @param initialSize initial capacity of the heap
-     */
-    public FourWayHeap(int initialSize) {
-        this.heap = (MinHeapNode[]) new Comparable[initialSize + 3];
-        this.initialSize = initialSize;
-        this.size = 0;
+    private int d = 4;
+    private int size;
+    private MinHeapNode[] array;	// The heap array
+    private int shift = 3;
+
+    public FourWayHeap(MinHeapNode [] array){
+        size = array.length;
+        buildMinHeap(array);
     }
 
-    /**
-     * Insert element into the heap
-     * Complexity: O(log(n))
-     * @param i element to be inserted
-     */
-    public void insert(MinHeapNode i) {
-//        if (heap.length == size) {
-//            expand();
-//        }
+    private int parent(int i) {
+        i = i - shift;
+        return (i-1)/d + shift;
+    }
+
+    private int kthChild(int i, int k) {
+        i -= shift;
+        return d*i + k + shift;
+    }
+
+    public void insert(MinHeapNode x) {
+        if(isFull())
+            throw new NoSuchElementException("Heap is full");
+
+        // heapify up
+        int hole = size + shift;
         size++;
-        int index = size + 2;
-        int parentIndex = getParentIndex(index);
-        while (index > 3 && i.compareTo(heap[parentIndex]) < 0) { //while the element is less then its parent
-            heap[index] = heap[parentIndex]; //place parent one level down
-            index = parentIndex; //and repeat the procedure on the next level
-            parentIndex = getParentIndex(index);
-        }
-        heap[index] = i; //insert the element at the appropriate place
+        array[hole] = x;
+        heapifyUp(hole);
     }
 
-    /**
-     * Return the top element and remove it from the heap
-     * Complexity: O(log(n))
-     * @return top element
-     */
-    public MinHeapNode removeMin() {
-        if (size == 0) {
-            throw new IllegalStateException("Heap is empty");
-        }
-        MinHeapNode tmp = heap[3];
-        heap[3] = heap[size + 2];
-        size--;
-//        if (size < heap.length * COLLAPSE_RATIO && heap.length / EXPAND_RATIO > initialSize) {
-//            collapse();
-//        }
-        repairTop(3);
-        return tmp;
+    public MinHeapNode findMin( ) {
+        if( isEmpty( ) )
+            return null;
+        return array[shift];
     }
-
-    /**
-     * Return index of the parent element
-     * @param index index of element, for which we want to return index of its parent
-     * @return index of the parent element
-     */
-    private int getParentIndex(int index) {
-        return (index - 1) / d + 3;
-    }
-
-    /**
-     * Place the top of the heap at a correct place withing the heap (repair the heap)
-     * @param topIndex index of the top of the heap
-     */
-    private void repairTop(int topIndex) {
-        MinHeapNode tmp = heap[topIndex];
-        int succ = findSuccessor((topIndex-3) * d + 4, (topIndex-3) * d + d + 3);
-        while (succ < size + 3 && tmp.compareTo(heap[succ]) > 0) {
-            heap[topIndex] = heap[succ];
-            topIndex = succ;
-            succ = findSuccessor((succ-3) * d + 4, (succ-3) * d + d + 3);
-        }
-        heap[topIndex] = tmp;
-    }
-
-    /**
-     * Return descendant with the least value
-     * @param from index of the first descendant
-     * @param to index of the last descendant
-     * @return index of the descendant with least value
-     */
-    private int findSuccessor(int from, int to) {
-        int succ = from;
-        for (int i = from + 1; i <= to && i < size; i++) {
-            if ((heap[succ]).compareTo(heap[i]) > 0) {
-                succ = i;
-            }
-        }
-        return succ;
-    }
-
-    /**
-     * Expand the underlying heap
-     */
-//    private void expand() {
-//        heap = Arrays.copyOf(heap, heap.length * EXPAND_RATIO);
-//    }
-//
-//    /**
-//     * Collapse the underlying heap
-//     */
-//    private void collapse() {
-//        heap = Arrays.copyOf(heap, heap.length / EXPAND_RATIO);
-//    }
 
     public int getSize() {
         return size;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            builder.append(heap[i]).append(" ");
+    public MinHeapNode extractMin() {
+        if(isEmpty())
+            return null;
+
+        MinHeapNode minItem = findMin();
+        array[shift] = array[size - 1 + shift];
+        size--;
+        heapifyDown(shift);
+        return minItem;
+    }
+
+    public void buildMinHeap(MinHeapNode[] array) {
+        this.array = new MinHeapNode[array.length + shift];
+        int k = shift;
+        for(MinHeapNode node : array) {
+            this.array[k++] = node;
         }
-        return builder.toString();
+        this.size = array.length;
+        for(int i = size + shift - 1; i >= shift; i--)
+            heapifyDown(i);
+    }
+
+
+    public boolean isEmpty( ) {
+        return size == 0;
+    }
+
+
+    public boolean isFull( ) {
+        return size == array.length;
+    }
+
+    private void heapifyDown(int hole) {
+        int child;
+        MinHeapNode tmp = array[hole];
+
+        while(kthChild(hole, 1) < size + shift) {
+            child = smallestChild(hole);
+
+            if( array[child].compareTo(tmp) < 0 )
+                array[hole] = array[child];
+            else
+                break;
+            hole = child;
+        }
+        array[hole] = tmp;
+    }
+
+    private int smallestChild(int hole) {
+        int bestChildYet = kthChild(hole, 1);
+        int k = 2;
+        int candidateChild = kthChild(hole, k);
+        while ((k <= d) && (candidateChild < size + shift)) {
+            if (array[candidateChild].compareTo(array[bestChildYet]) < 0)
+                bestChildYet = candidateChild;
+            k++;
+            candidateChild = kthChild(hole, k);
+        }
+        return bestChildYet;
+    }
+
+    private void heapifyUp(int hole) {
+        MinHeapNode tmp = array[hole];
+        for (; hole > shift && tmp.compareTo( array[parent(hole)] ) < 0; hole = parent(hole) )
+            array[hole] = array[parent(hole)];
+        array[hole] = tmp;
     }
 }
