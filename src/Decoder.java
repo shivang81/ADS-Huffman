@@ -16,6 +16,7 @@ public class decoder {
     private MinHeapNode decodeTreeRoot = null;
     private FileInputStream inputStream = null;
     private static BufferedWriter bufferedWriter;
+    private static boolean isPrintEnabled = false;
 
     void buildDecodeTree(String codeFileName) {
         try (Stream<String> stream = Files.lines(Paths.get(codeFileName))) {
@@ -48,7 +49,7 @@ public class decoder {
     void decodeFile(String encodedFile) throws IOException{
         inputStream = new FileInputStream(encodedFile);
         MinHeapNode currentNode = decodeTreeRoot;
-        int b = getByte();
+        int b = getByte();  // Reads a byte from the encoded file
         while (b != -1) {
             for(int i = 0 ; i < 8 ; i++) {
                 int bit = b & getMask(i);
@@ -62,7 +63,7 @@ public class decoder {
                     currentNode = decodeTreeRoot;
                 }
             }
-            b = getByte();
+            b = getByte();  // Reads a byte from the encoded file
         }
     }
 
@@ -88,6 +89,11 @@ public class decoder {
 
     }
 
+    static void printLog(String str) {
+        if(isPrintEnabled)
+            System.out.println(str);
+    }
+
     public static void main(String[] args) throws IOException {
         Long start = System.currentTimeMillis();
         String encodedFile = args[0];
@@ -98,6 +104,6 @@ public class decoder {
         d.buildDecodeTree(codeTableFile);
         d.decodeFile(encodedFile);
         bufferedWriter.close();
-        System.out.println("Time to decode = " + String.valueOf(System.currentTimeMillis() - start));
+        printLog("Time to decode(milliseconds) = " + String.valueOf(System.currentTimeMillis() - start));
     }
 }

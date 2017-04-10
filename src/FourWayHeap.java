@@ -4,7 +4,7 @@ public class FourWayHeap {
 
     private int d = 4;
     private int size;
-    private MinHeapNode[] array;	// The heap array
+    private MinHeapNode[] array;
     private int shift = 3;
 
     public FourWayHeap(MinHeapNode [] array){
@@ -25,8 +25,6 @@ public class FourWayHeap {
     public void insert(MinHeapNode x) {
         if(isFull())
             throw new NoSuchElementException("Heap is full");
-
-        // heapify up
         int hole = size + shift;
         size++;
         array[hole] = x;

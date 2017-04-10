@@ -1,7 +1,9 @@
 /**
+ * Binary heap implementation
+ *
  * Created by shivanggupta on 27/03/17.
  */
-public class BinaryHeap<MinHeapNode extends Comparable<MinHeapNode>> {
+public class BinaryHeap {
     private static final int CAPACITY = 2;
 
     private int size;
@@ -9,12 +11,12 @@ public class BinaryHeap<MinHeapNode extends Comparable<MinHeapNode>> {
 
     public BinaryHeap() {
         size = 0;
-        heap = (MinHeapNode[]) new Comparable[CAPACITY];
+        heap = new MinHeapNode[CAPACITY];
     }
 
     public BinaryHeap(MinHeapNode[] array) {
         size = array.length;
-        heap = (MinHeapNode[]) new Comparable[array.length+1];
+        heap = new MinHeapNode[array.length+1];
 
         System.arraycopy(array, 0, heap, 1, array.length);
         buildHeap();
@@ -63,7 +65,7 @@ public class BinaryHeap<MinHeapNode extends Comparable<MinHeapNode>> {
     }
     private void doubleSize() {
         MinHeapNode [] old = heap;
-        heap = (MinHeapNode []) new Comparable[heap.length * 2];
+        heap = new MinHeapNode [heap.length * 2];
         System.arraycopy(old, 1, heap, 1, size);
     }
 

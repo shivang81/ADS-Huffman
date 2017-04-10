@@ -21,7 +21,7 @@ public class encoder {
     private HashMap<String, Integer> freqTable = new HashMap<>();
     private MinHeapNode top = null;
     private HashMap<String, String> codeTable = new HashMap<>();
-    private boolean isPrintEnabled = false;
+    private static boolean isPrintEnabled = false;
 
     private void buildFreqTableAndEncode(String inputFileName) {
 
@@ -34,20 +34,20 @@ public class encoder {
                     freqTable.put(entry, 1);
                 }
             });
-            Long startTime = System.currentTimeMillis();
-            for(int i = 0; i < 10; i++)
-                buildHuffmanTreeUsingBinaryHeap();
-            System.out.println("Time using binary heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
-
-            startTime = System.currentTimeMillis();
-            for(int i = 0; i < 10; i++)
+//            Long startTime = System.currentTimeMillis();
+//            for(int i = 0; i < 10; i++)
+//                buildHuffmanTreeUsingBinaryHeap();
+//            System.out.println("Time using binary heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
+//
+//            startTime = System.currentTimeMillis();
+//            for(int i = 0; i < 10; i++)
             buildHuffmanTreeUsingFourWayHeap();
-            System.out.println("Time using 4-way heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
-
-            startTime = System.currentTimeMillis();
-            for(int i = 0; i < 10; i++)
-                buildHuffmanTreeUsingPairingHeap();
-            System.out.println("Time using pairing heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
+//            System.out.println("Time using 4-way heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
+//
+//            startTime = System.currentTimeMillis();
+//            for(int i = 0; i < 10; i++)
+//                buildHuffmanTreeUsingPairingHeap();
+//            System.out.println("Time using pairing heap (millisecond): " + String.valueOf((System.currentTimeMillis() - startTime) / 10.0));
 
             createCodeTable(top, new int[10000], 0);
             saveCodeTable();
@@ -68,7 +68,7 @@ public class encoder {
             heapNodes[i++] = new MinHeapNode(entry.getKey(), entry.getValue());
         }
 
-        BinaryHeap<MinHeapNode> binaryHeap = new BinaryHeap<>(heapNodes);
+        BinaryHeap binaryHeap = new BinaryHeap(heapNodes);
 
         while (binaryHeap.getSize() != 1) {
             left = binaryHeap.removeMin();
@@ -145,7 +145,7 @@ public class encoder {
         }
     }
 
-    void printLog(String str) {
+    static void printLog(String str) {
         if(isPrintEnabled)
             System.out.println(str);
     }
@@ -211,6 +211,6 @@ public class encoder {
         String inputFileName = args[0];
         encoder encoder = new encoder();
         encoder.buildFreqTableAndEncode(inputFileName);
-        System.out.println("Time to encode = " + String.valueOf(System.currentTimeMillis() - start));
+        printLog("Time to encode(milliseconds)  = " + String.valueOf(System.currentTimeMillis() - start));
     }
 }
