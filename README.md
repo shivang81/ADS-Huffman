@@ -25,4 +25,5 @@ The decoder can be executed using:
 $ java decoder <encoded_file_name> <code_table_file_name>
 
 Eg: java decoder encoded.bin code_table.txt
+
 This will generate the output file decoded.txt
