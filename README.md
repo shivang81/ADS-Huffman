@@ -11,11 +11,13 @@ The above command will generate the class files.
 To clear out the class files you can run the below command:
 
 $ make clean
+
 The encoder can be executed using:
 
 $ java encoder <input_file_name>
 
 Eg: java encoded sample_input.txt
+
 This will generate two files: encoded.bin and code_table.txt
 
 The decoder can be executed using:
