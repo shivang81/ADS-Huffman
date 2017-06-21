@@ -1,4 +1,4 @@
-# ADS-Huffman
+# Huffman-Compression
 Data compression using Huffman coding and binary, 4-ary, pairing heaps
 
 # Compiling Instructions
